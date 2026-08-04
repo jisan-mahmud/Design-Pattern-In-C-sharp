@@ -1,15 +1,17 @@
-﻿public interface IObserve
+﻿public interface IObserver
 {
     void Update(string message);
 }
 
-public class Subsciber : IObserve
+public class Subsciber : IObserver
 {
-    public string name;
+    private string name;
+
     public Subsciber(string name)
     {
         this.name = name;
     }
+
     public void Update(string message)
     {
         System.Console.WriteLine(message);
@@ -17,47 +19,45 @@ public class Subsciber : IObserve
 }
 
 
-public class YoutubeChannel
+public class YouTubeChannel
 {
-    private List<Subsciber> subscibers = new();
-    private string channelName;
+    private List<IObserver> observers = new List<IObserver>();
 
-    public YoutubeChannel(string channelName)
+    public void Subscribe(IObserver observer)
     {
-        this.channelName = channelName;
+        observers.Add(observer);
     }
 
-    public void Subscribe(Subsciber subsciber)
+    public void Unsubscribe(IObserver observer)
     {
-        subscibers.Add(subsciber);
-    }
-
-    public void UnSubscribe(Subsciber subsciber)
-    {
-        subscibers.Remove(subsciber);
+        observers.Remove(observer);
     }
 
     public void UploadVideo(string title)
     {
-        foreach (var subsciber in subscibers)
+        foreach (var observer in observers)
         {
-            subsciber.Update($"{subsciber.name} : {channelName} has uploaded a video - {title}");
+            observer.Update($"New video uploaded: {title}");
         }
     }
 }
-
 
 class Program
 {
     static void Main(string[] args)
     {
-        YoutubeChannel ytc = new YoutubeChannel("C# with Sandeep");
-        Subsciber s1 = new Subsciber("Ramesh");
-        ytc.Subscribe(s1);
-        Subsciber s2 = new Subsciber("Suresh");
-        ytc.Subscribe(s2);
+        YouTubeChannel channel = new YouTubeChannel();
 
-        ytc.UploadVideo("Observer Design Pattern in C#");
+        Subsciber subscriber1 = new Subsciber("Subscriber 1");
+        Subsciber subscriber2 = new Subsciber("Subscriber 2");
 
+        channel.Subscribe(subscriber1);
+        channel.Subscribe(subscriber2);
+
+        channel.UploadVideo("Observer Design Pattern in C#");
+
+        channel.Unsubscribe(subscriber1);
+
+        channel.UploadVideo("Another Video");
     }
 }
