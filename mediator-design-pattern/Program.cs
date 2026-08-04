@@ -1,50 +1,50 @@
 ﻿public interface IChatMediator
 {
-    void SendMessage(string message, User sender);
+    void SendMessage(string message, User user);
 }
+
 
 public class ChatMediator : IChatMediator
 {
-    private readonly List<User> _users = new();
+    private List<User> users = new List<User>();
 
     public void AddUser(User user)
     {
-        _users.Add(user);
+        users.Add(user);
     }
 
-    public void SendMessage(string message, User sender)
+    public void SendMessage(string message, User user)
     {
-        foreach (var user in _users)
+        foreach (var u in users)
         {
-            if (user != sender)
+            if (u != user)
             {
-                user.ReceiveMessage(message);
+                u.Receive(message);
             }
         }
     }
 }
 
-
 public class User
 {
-    private string _name;
-    private IChatMediator _mediator;
+    private string name;
+    private ChatMediator mediator;
 
-    public User(string name, IChatMediator mediator)
+    public User(string name, ChatMediator mediator)
     {
-        _name = name;
-        _mediator = mediator;
+        this.name = name;
+        this.mediator = mediator;
     }
 
-    public void SendMessage(string message)
+    public void Send(string message)
     {
-        Console.WriteLine($"{_name} sends: {message}");
-        _mediator.SendMessage(message, this);
+        System.Console.WriteLine($"{name} sends: {message}");
+        mediator.SendMessage(message, this);
     }
 
-    public void ReceiveMessage(string message)
+    public void Receive(string message)
     {
-        Console.WriteLine($"{_name} receives: {message}");
+        System.Console.WriteLine($"{name} receives: {message}");
     }
 }
 
@@ -63,8 +63,8 @@ class Program
         mediator.AddUser(user2);
         mediator.AddUser(user3);
 
-        user1.SendMessage("Hello, everyone!");
-        user2.SendMessage("Hi Alice!");
-        user3.SendMessage("Hey Bob!");
+        user1.Send("Hello, everyone!");
+        user2.Send("Hi Alice!");
+        user3.Send("Hey there!");
     }
 }
