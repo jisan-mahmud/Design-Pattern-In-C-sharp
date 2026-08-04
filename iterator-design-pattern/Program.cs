@@ -4,15 +4,15 @@
     object Next();
 }
 
-
-public class StudentIterator : IIterator
+public class StudentIteratot : IIterator
 {
     private List<Student> _students;
-    private int _position = 0;
+    private int _position;
 
-    public StudentIterator(List<Student> students)
+    public StudentIteratot(List<Student> students)
     {
-        this._students = students;
+        _students = students;
+        _position = 0;
     }
 
     public bool HasNext()
@@ -26,48 +26,52 @@ public class StudentIterator : IIterator
         {
             return _students[_position++];
         }
-        else
-        {
-            throw new InvalidOperationException("No more elements");
-        }
+        return null;
     }
 }
 
-
 public class StudentCollection
 {
-    private List<Student> _students = new List<Student>();
+    private List<Student> _students;
 
-    public void Add(Student student)
+    public StudentCollection()
+    {
+        _students = new List<Student>();
+    }
+
+    public void AddStudent(Student student)
     {
         _students.Add(student);
     }
 
-    public IIterator CreateIterator()
+    public IIterator GetIterator()
     {
-        return new StudentIterator(_students);
-    } 
+        return new StudentIteratot(_students);
+    }
 }
-
 
 public class Student
 {
     public string Name { get; set; }
     public int Age { get; set; }
-}
 
+    public Student(string name, int age)
+    {
+        Name = name;
+        Age = age;
+    }
+}
 
 class Program
 {
     static void Main(string[] args)
     {
-        StudentCollection collection = new StudentCollection();
-        collection.Add(new Student { Name = "Alice", Age = 20 });
-        collection.Add(new Student { Name = "Bob", Age = 22 });
-        collection.Add(new Student { Name = "Charlie", Age = 21 });
+        StudentCollection studentCollection = new StudentCollection();
+        studentCollection.AddStudent(new Student("Alice", 20));
+        studentCollection.AddStudent(new Student("Bob", 22));
+        studentCollection.AddStudent(new Student("Charlie", 21));
 
-        IIterator iterator = collection.CreateIterator();
-
+        IIterator iterator = studentCollection.GetIterator();
         while (iterator.HasNext())
         {
             Student student = (Student)iterator.Next();
